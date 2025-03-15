@@ -3,7 +3,7 @@
 ### Kindly change the IP address and kubeadm init output of join token in this script ###
 
 nmcli connection down ens160
-nmcli connection modify ens160 ipv4.addresses 192.168.29.12/24 ipv4.gateway 192.168.29.1 ipv4.method manual
+nmcli connection modify ens160 ipv4.addresses 192.168.29.236/24 ipv4.gateway 192.168.29.1 ipv4.method manual
 nmcli connection up ens160
 
 echo "IPv4 Gateway : $(ip route get 1.2.3.4 | awk '{print $3}')"
@@ -18,7 +18,7 @@ sleep 3
 ### Make DNS local entries ### Change it as per your requirement #####
 sudo cat >> /etc/hosts << EOF
 192.168.29.11 master.server.vm
-192.168.29.12 node1.server.vm
+192.168.29.236 node1.server.vm
 192.168.29.13 node2.server.vm
 EOF
 echo -e "\nNodes \n$(tail -3 /etc/hosts)\n"
@@ -112,4 +112,4 @@ echo "joining to the cluster"
 sleep 3
 
 # kubeadm join master_node_ip:port_open_at_master --token ********* command need to be add
-kubeadm join 192.168.29.11:6443 --token 8o6b8v.pl5zdoeczc2wp9xj --discovery-token-ca-cert-hash sha256:aa4c82d7da1acf9fc1987a2e3a5cd6f154831bbfa0ce8d50c52224a0ac1d3df2 
+kubeadm join 192.168.29.11:6443 --token lvpo4l.4l0xeeacxe6bz6fa --discovery-token-ca-cert-hash sha256:1143f35e444e77cc66a957046cd750adf30d5ea5c7152fe251ad1b77ae50e1c2

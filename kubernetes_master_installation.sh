@@ -2,7 +2,7 @@
 
 # Setting-up a network
 nmcli connection down ens160
-nmcli connection modify ens160 ipv4.addresses 192.168.29.11/24 ipv4.gateway 192.168.29.1 ipv4.method manual
+nmcli connection modify ens160 ipv4.addresses 192.168.29.11/24 ipv4.gateway 192.168.29.1 
 nmcli connection up ens160
 
 echo "IPv4 Gateway : $(ip route get 1.2.3.4 | awk '{print $3}')"
@@ -80,7 +80,7 @@ sudo yum makecache
 
 # Install Docker packages :docker-ce docker-ce-cli containerd.io docker-compose-plugin
 sudo yum install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
-sudo containerd config default | sudo tee /etc/containerd/config.tom
+sudo containerd config default | sudo tee /etc/containerd/config.toml
 sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
 sudo sed -i 's/disabled_plugins = \["cri"]/disabled_plugins = \[""]/g' /etc/containerd/config.toml
 
