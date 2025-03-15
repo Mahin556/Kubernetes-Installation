@@ -2,7 +2,7 @@
 
 # Setting-up a network
 nmcli connection down ens160
-nmcli connection modify ens160 ipv4.addresses 192.168.29.11/24 ipv4.gateway 192.168.29.1 
+nmcli connection modify ens160 ipv4.addresses 192.168.29.11/24 ipv4.gateway 192.168.29.1 ipv4.method manual
 nmcli connection up ens160
 
 echo "IPv4 Gateway : $(ip route get 1.2.3.4 | awk '{print $3}')"
