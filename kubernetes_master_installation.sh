@@ -1,15 +1,5 @@
 #!/bin/bash
 
-# Setting-up a network
-nmcli connection down ens160
-nmcli connection modify ens160 ipv4.addresses 192.168.29.11/24 ipv4.gateway 192.168.29.1 ipv4.method manual
-nmcli connection up ens160
-
-echo "IPv4 Gateway : $(ip route get 1.2.3.4 | awk '{print $3}')"
-echo "IPv4 Address : $(hostname -I | awk '{print $1}')"
-# echo "IPv4 Address : $(ip route get 1.2.3.4 | awk '{print $7}')"
-sleep 3
-
 # setting-up a hostname
 hostnamectl set-hostname master.server.vm
 echo "Hostname : $(hostname)"
