@@ -2,8 +2,6 @@
 
 # setting-up a hostname
 hostnamectl set-hostname master.server.vm
-echo "Hostname : $(hostname)"
-sleep 3
 
 ###Make DNS local entries - Change it as per your requirement
 sudo cat >> /etc/hosts << EOF
