@@ -16,13 +16,14 @@ EOF
 # 1. Disable Swap: Required for Kubernetes to function correctly.
 echo "Disabling swap..."
 sudo swapoff -a
+sudo sed -i.bak -e '/swap/s/^/#/g' /etc/fstab
 sleep 2
 
 # 2. Load Necessary Kernel Modules: Required for Kubernetes networking.
 echo "Loading necessary kernel modules for Kubernetes networking..."
-cat <<EOF | sudo tee /etc/modules-load.d/kubernetes.conf
-overlay
+sudo cat > /etc/modules-load.d/kubernetes.conf << EOF
 br_netfilter
+overlay
 EOF
 
 sudo modprobe overlay
@@ -41,6 +42,10 @@ sudo sysctl --system
 lsmod | grep br_netfilter
 lsmod | grep overlay
 sleep 2
+
+#sudo setenforce 0
+#sudo sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
+#echo -e "SELINUX STATUS:\n$(cat /etc/sysconfig/selinux | grep SELINUX=)"
 
 # 4. Install Containerd:
 echo "Installing containerd..."
