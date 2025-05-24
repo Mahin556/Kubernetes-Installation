@@ -16,7 +16,10 @@ This guide provides step-by-step instructions for installing Minikube on Ubuntu.
 Update your package lists to make sure you are getting the latest version and dependencies.
 
 ```bash
+#Debian
 sudo apt update
+#fedora
+sudo yum makecache
 ```
 
 <kbd>![image](https://github.com/paragpallavsingh/kubernetes-kickstarter/assets/40052830/57f1c5d9-474a-43b8-90b9-fe542e122f3f)</kbd>
