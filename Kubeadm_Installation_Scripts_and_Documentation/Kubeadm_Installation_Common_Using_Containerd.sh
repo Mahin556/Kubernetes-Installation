@@ -20,7 +20,7 @@ sleep 2
 
 # 2. Load Necessary Kernel Modules: Required for Kubernetes networking.
 echo "Loading necessary kernel modules for Kubernetes networking..."
-cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+cat <<EOF | sudo tee /etc/modules-load.d/kubernetes.conf
 overlay
 br_netfilter
 EOF
