@@ -114,7 +114,7 @@ To create a multi Node Kubernetes Cluster with Minikube
 minikube start --nodes <no-of-nodes> -p <cluster_name>
 minikube start --nodes 2 -p multinode-demo
 ```
-For more detail:- https://medium.com/womenintechnology/create-a-3-node-kubernetes-cluster-with-minikube-8e3dc57d6df2
+For more details:- https://medium.com/womenintechnology/create-a-3-node-kubernetes-cluster-with-minikube-8e3dc57d6df2
 
 ---
 
