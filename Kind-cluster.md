@@ -1,4 +1,5 @@
 # KIND Cluster Setup Guide
+Follow: https://kind.sigs.k8s.io/docs/user/quick-start/
 
 ## 1. Installing KIND and kubectl
 ### Install KIND and kubectl using the provided script:
