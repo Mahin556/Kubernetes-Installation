@@ -1,6 +1,10 @@
 #!/bin/bash
 
+
 # Execute on Both "Master" & "Worker" Nodes:
+
+# setting-up a hostname
+hostnamectl set-hostname master.server.vm
 
 # 1. Disable Swap: Required for Kubernetes to function correctly.
 echo "Disabling swap..."
