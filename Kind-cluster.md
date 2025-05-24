@@ -1,7 +1,7 @@
 # KIND Cluster Setup Guide
 
 ## 1. Installing KIND and kubectl
-Install KIND and kubectl using the provided script:
+### Install KIND and kubectl using the provided script:
 ```bash
 
 #!/bin/bash
@@ -23,6 +23,31 @@ rm -f kubectl
 rm -rf kind
 
 echo "kind & kubectl installation complete."
+```
+### Give Execute permission to the script
+```
+sudo chmod +x kind.sh
+```
+### Execute kind.sh
+```
+./kind.sh
+```
+
+### Install Docker.io
+```
+sudo yum update && sudo yum install docker.io
+```
+
+### Configure a docker
+```
+sudo usermod -aG docker ${USER} && newgrp docker
+```
+
+### verify the installation
+```
+docker --verison
+kubectl version
+kind --version
 ```
 
 ## 2. Setting Up the KIND Cluster
