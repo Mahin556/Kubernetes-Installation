@@ -43,7 +43,7 @@ sudo yum update && sudo yum install docker.io
 sudo usermod -aG docker ${USER} && newgrp docker
 ```
 
-### verify the installation
+### Verify the installation
 ```
 docker --verison
 kubectl version
