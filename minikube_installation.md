@@ -120,9 +120,13 @@ minikube status
 
 
 You can also use `kubectl` to interact with your cluster:
-
 ```bash
 kubectl get nodes
+kubectl get nodes --context=<context>
+```
+It automatically set minikube context as default if not:
+```
+kubectl config use-context <context>
 ```
 
 ---
