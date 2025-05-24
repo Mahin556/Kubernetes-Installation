@@ -38,7 +38,7 @@ sudo chmod +x kind.sh
 ./kind.sh
 ```
 
-### Install Docker.io
+### Install Docker
 ```
 sudo dnf -y install dnf-plugins-core
 sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
