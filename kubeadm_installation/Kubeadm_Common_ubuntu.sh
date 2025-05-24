@@ -90,6 +90,7 @@ sleep 2
 sudo apt-get install -y kubelet kubeadm kubectl
 sleep 2
 
+# to lock the versions of the listed packages so they won’t be automatically upgraded during apt upgrade or apt full-upgrade
 sudo apt-mark hold kubelet kubeadm kubectl
 sleep 2
 

@@ -1,33 +1,26 @@
 #!/bin/bash
 
-hostnamectl set-hostname node1.server.vm
+CONTROL_PLAN=("192.168.29.11" "master.server.vm")
+WORKER1=("192.168.29.12" "node1.server.vm")
+
+hostnamectl set-hostname ${CONTROL_PLAN[1]}
 echo "Hostname : $(hostname)"
-sleep 3
 
 ### Make DNS local entries ### Change it as per your requirement #####
 sudo cat >> /etc/hosts << EOF
-192.168.29.11 master.server.vm
-192.168.29.236 node1.server.vm
-192.168.29.13 node2.server.vm
+${CONTROL_PLAN} ${CONTROL_PLAN[1]} 
+${WORKER1} ${WORKER1[1]}
 EOF
 echo -e "\nNodes \n$(tail -3 /etc/hosts)\n"
-sleep 3
+sleep 2
 
 sudo dnf install -y kernel-devel-$(uname -r)
 
 sudo modprobe br_netfilter
-sudo modprobe ip_vs
-sudo modprobe ip_vs_rr
-sudo modprobe ip_vs_wrr
-sudo modprobe ip_vs_sh
 sudo modprobe overlay
 
 sudo cat > /etc/modules-load.d/kubernetes.conf << EOF
 br_netfilter
-ip_vs
-ip_vs_rr
-ip_vs_wrr
-ip_vs_sh
 overlay
 EOF
 
@@ -55,13 +48,13 @@ sudo yum install -y yum-utils
 sudo yum config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 sudo yum makecache
 
-sudo yum install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+sudo yum install -y containerd.io
 sudo containerd config default | sudo tee /etc/containerd/config.toml
 sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
 sudo sed -i 's/disabled_plugins = \["cri"]/disabled_plugins = \[""]/g' /etc/containerd/config.toml
 
 sudo systemctl enable --now containerd.service
-sudo systemctl enable --now docker
+sudo systemctl is-active containerd
 # sudo systemctl status containerd.service
 # docker run hello-world
 
@@ -77,14 +70,6 @@ sleep 3
 sudo cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
-baseurl=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/
-enabled=1
-gpgcheck=1
-gpgkey=https://pkgs.k8s.io/core:/stable:/v1.31/rpm/repodata/repomd.xml.key
-exclude=kubelet kubeadm kubectl cri-tools kubernetes-cni
-
-[kubernetes]
-name=Kubernetes
 baseurl=https://pkgs.k8s.io/core:/stable:/v1.32/rpm/
 enabled=1
 gpgcheck=1
@@ -94,11 +79,7 @@ EOF
 
 ### Installing the kubelet kubeadm and kubectl
 sudo dnf makecache; dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
-sudo systemctl enable --now kubelet.service
+sudo systemctl enable --now kubelet
+sudo dnf mark install kubelet kubeadm kubectl
 
-sleep 3
-echo "joining to the cluster"
-sleep 3
-
-# kubeadm join master_node_ip:port_open_at_master --token ********* command need to be add
-kubeadm join 192.168.29.11:6443 --token lvpo4l.4l0xeeacxe6bz6fa --discovery-token-ca-cert-hash sha256:1143f35e444e77cc66a957046cd750adf30d5ea5c7152fe251ad1b77ae50e1c2
+echo "Kubernetes setup completed."
