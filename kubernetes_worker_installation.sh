@@ -1,16 +1,5 @@
 #!/bin/bash
 
-### Kindly change the IP address and kubeadm init output of join token in this script ###
-
-nmcli connection down ens160
-nmcli connection modify ens160 ipv4.addresses 192.168.29.236/24 ipv4.gateway 192.168.29.1 ipv4.method manual
-nmcli connection up ens160
-
-echo "IPv4 Gateway : $(ip route get 1.2.3.4 | awk '{print $3}')"
-echo "IPv4 Address : $(hostname -I | awk '{print $1}')"
-# echo "IPv4 Address : $(ip route get 1.2.3.4 | awk '{print $7}')"
-sleep 3
-
 hostnamectl set-hostname node1.server.vm
 echo "Hostname : $(hostname)"
 sleep 3
