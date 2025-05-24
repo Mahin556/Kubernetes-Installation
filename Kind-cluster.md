@@ -83,6 +83,7 @@ Verify the cluster:
 
 kubectl get nodes
 kubectl cluster-info
+kubectl cluster-info --context=<context>
 ```
 ## 3. Accessing the Cluster
 Use kubectl to interact with the cluster:
