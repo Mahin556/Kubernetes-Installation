@@ -4,13 +4,12 @@
 # Execute on Both "Master" & "Worker" Nodes:
 
 # setting-up a hostname
-hostnamectl set-hostname master.server.vm
+sudo hostnamectl set-hostname master.server.vm
 
 ###Make DNS local entries - Change it as per your requirement
 sudo cat >> /etc/hosts << EOF
-192.168.29.11 master.server.vm
-192.168.29.12 node1.server.vm
-192.168.29.13 node2.server.vm
+172.31.33.52 master.server.vm
+172.31.1.43 node1.server.vm
 EOF
 
 # 1. Disable Swap: Required for Kubernetes to function correctly.
@@ -42,10 +41,6 @@ sudo sysctl --system
 lsmod | grep br_netfilter
 lsmod | grep overlay
 sleep 2
-
-#sudo setenforce 0
-#sudo sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
-#echo -e "SELINUX STATUS:\n$(cat /etc/sysconfig/selinux | grep SELINUX=)"
 
 # 4. Install Containerd:
 echo "Installing containerd..."

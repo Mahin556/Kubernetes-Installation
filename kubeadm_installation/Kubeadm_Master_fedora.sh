@@ -12,24 +12,11 @@ EOF
 echo -e "\nNodes \n$(tail -3 /etc/hosts)\n"
 sleep 3
 
-
-sudo yum install -y kernel-devel-$(uname -r)
-
-
 sudo modprobe br_netfilter
-sudo modprobe ip_vs
-sudo modprobe ip_vs_rr
-sudo modprobe ip_vs_wrr
-sudo modprobe ip_vs_sh
 sudo modprobe overlay
-
 
 sudo cat > /etc/modules-load.d/kubernetes.conf << EOF
 br_netfilter
-ip_vs
-ip_vs_rr
-ip_vs_wrr
-ip_vs_sh
 overlay
 EOF
 
