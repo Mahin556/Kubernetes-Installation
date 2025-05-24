@@ -40,7 +40,12 @@ sudo chmod +x kind.sh
 
 ### Install Docker.io
 ```
-sudo yum update && sudo yum install docker.io
+sudo dnf -y install dnf-plugins-core
+sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+```
+### Start and enable docker service
+```
+sudo systemctl enable --now docker
 ```
 
 ### Configure a docker
