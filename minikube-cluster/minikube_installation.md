@@ -109,6 +109,13 @@ minikube start --driver=docker --vm=true
 
 This command will start a single-node Kubernetes cluster inside a Docker container.
 
+To create a multi Node Kubernetes Cluster with Minikube
+```
+minikube start --nodes <no-of-nodes> -p <cluster_name>
+minikube start --nodes 2 -p multinode-demo --driver=docker --vm=true
+```
+For more details:- https://medium.com/womenintechnology/create-a-3-node-kubernetes-cluster-with-minikube-8e3dc57d6df2
+
 ---
 
 ## Step 7: Check Cluster Status
