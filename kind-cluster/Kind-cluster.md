@@ -97,6 +97,12 @@ Create the cluster using the configuration file:
 
 kind create cluster --config kind-cluster-config.yaml --name my-kind-cluster
 ```
+Create the cluster using command:
+
+![image](https://github.com/user-attachments/assets/de72bbb5-b11a-4576-907c-9dfe300c8162)
+
+For images: https://github.com/kubernetes-sigs/kind/releases
+
 Verify the cluster:
 
 ```bash
