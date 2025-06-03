@@ -2,7 +2,7 @@
 # Author: Mahin Raza
 # Date: 2025-6-1
 # Description: This script sets up a Kubernetes cluster using kubeadm on Fedora-based systems.
-# Version: 0.0.3
+# Version: 0.0.6
 
 ###############################################################################################
 # USAGE:
