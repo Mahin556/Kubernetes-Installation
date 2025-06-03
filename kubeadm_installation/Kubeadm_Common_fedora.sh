@@ -69,17 +69,26 @@ input_nodes() {
 }
 
 pre_install() {
-    domain_name=$(read -p "Enter the domain name for the node (e.g., server.vm): " domain_name)
-    local hostname=$(read -p "Enter the hostname for the node(e.g, master1/worker1): " hostname)
-    local ip_address=$(read -p "Enter the IP address for the node: " ip_address)
+    domain_name=""
+    local hostname
+    local ip_address
+
+    read -p "Enter the domain name for the node (e.g., server.vm): " domain_name
+    read -p "Enter the hostname for the node (e.g., master1/worker1): " hostname
+    read -p "Enter the IP address for the node: " ip_address
 
     # Validate inputs
-
     if [[ -z "$domain_name" || -z "$hostname" || -z "$ip_address" ]]; then
         echo "Domain name, hostname, and IP address cannot be empty."
         exit 1
     fi
 
+    # Example usage or returning the values
+    echo "Domain: $domain_name"
+    echo "Hostname: $hostname"
+    echo "IP Address: $ip_address"
+
+    
     # Check if the IP address is valid
     ip_Validate "$ip_address"
 
