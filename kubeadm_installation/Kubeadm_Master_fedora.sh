@@ -8,12 +8,16 @@
 
 # Initializing Kubernetes Control Plane
 
-POD_NETWORK_CIDR=$(read -p "Enter the Pod Network CIDR (default:10.244.0.0/16): " input) 
-if [ -z "$POD_NETWORK_CIDR" ]; then
+read -p "Enter the Pod Network CIDR (default:10.244.0.0/16): " input
+
+if [ -z "$input" ]; then
     POD_NETWORK_CIDR="10.244.0.0/16"
+else
+    POD_NETWORK_CIDR="$input"
 fi
-IP_ADDRESS=$( echo $POD_NETWORK_CIDR | awk -F= '/' '{print $1}')
-CIDR=$( echo $POD_NETWORK_CIDR | awk -F= '/' '{print $2}')
+IP_ADDRESS=$(echo "$POD_NETWORK_CIDR" | awk -F'/' '{print $1}')
+CIDR=$(echo "$POD_NETWORK_CIDR" | awk -F'/' '{print $2}')
+
 
 
 # Pulling the necessary container images from the default container registry (usually Docker Hub)

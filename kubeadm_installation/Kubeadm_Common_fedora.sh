@@ -50,22 +50,21 @@ input_nodes() {
     Node_Type="$1"
     echo "Please enter the initial $Node_Type nodes details:"
     count=1
-        for true; do
-            read -p "Enter the $Node_Type-node-$count hostname (or type 'done' to finish): " hostname
-            if [[ "$hostname" == "done" ]]; then
-                break
-            fi
-            read -p "Enter the $Node_Type-node-$count IP address: " ip_address
-            
-            # Validate IP address format
-            ip_Validate "$ip_address"
-
-            ping_test "$ip_address"
-            
-            # Add node to /etc/hosts
-            echo "$ip_address $hostname.$domain_name $hostname" | sudo tee -a /etc/hosts > /dev/null
-            ((count++))
-        done
+    while true; do
+        read -p "Enter the $Node_Type-node-$count hostname (or type 'done' to finish): " hostname
+        if [[ "$hostname" == "done" ]]; then
+            break
+        fi
+        read -p "Enter the $Node_Type-node-$count IP address: " ip_address
+        
+        # Validate IP address format
+        ip_Validate "$ip_address"
+        ping_test "$ip_address"
+        
+        # Add node to /etc/hosts
+        echo "$ip_address $hostname.$domain_name $hostname" | sudo tee -a /etc/hosts > /dev/null
+        ((count++))
+    done
 }
 
 pre_install() {
@@ -126,7 +125,7 @@ pre_install() {
 }
 
 # Make sure the script is run with a single argument
-if [[ $# -ne 1]]; then
+if [[ $# -ne 1 ]]; then
     echo "Usage: $0 <MASTET|WORKER>"
     exit 1
 else 
