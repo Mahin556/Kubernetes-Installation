@@ -124,22 +124,24 @@ pre_install() {
           
 }
 
+NODE=$1
 # Make sure the script is run with a single argument
 if [[ $# -ne 1 ]]; then
-    echo "Usage: $0 <MASTET|WORKER>"
+    echo "Usage: $0 <MASTER|WORKER>"
     exit 1
-else 
-    if [[ $1 == "MASTER" ]];then
-        echo "Setting up the Master Node..."
-        pre_install "$1"  # Call the function to set up the master node
-    elif [[ $1 == "WORKER" ]]; then
-        echo "Setting up Worker Node..."
-        pre_install "$1" # Call the function to set up the worker node
-    else
-        echo "Invalid argument. Please use 'MASTER' or 'WORKER'."
-        exit 1
-    fi     
 fi
+
+if [[ "$NODE" == "MASTER" ]];then
+    echo "Setting up the Master Node..."
+    pre_install "$NODE"  # Call the function to set up the master node
+elif [[ "$NODE" == "WORKER" ]]; then
+    echo "Setting up Worker Node..."
+    pre_install "$NODE" # Call the function to set up the worker node
+else
+    echo "Invalid argument. Please use 'MASTER' or 'WORKER'."
+    exit 1
+fi     
+
 
 # Update the system     
 echo "Updating the system..."
@@ -182,7 +184,7 @@ EOF
 sudo sysctl --system
 
 # Configure the appropriate firewall rules.
-if [[ $i == "MASTER" ]]; then
+if [[ $NODE == "MASTER" ]]; then
     echo "Configuring firewall rules for Master Node..."
     for port in 6443 2379-2380 2380 10250 10259 10257; do
         sudo firewall-cmd --permanent --add-port=$port/tcp
@@ -205,8 +207,8 @@ sudo dnf -y install dnf-plugins-core
 sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 sudo dnf makecache
 
-sudo dnf -y install containerd.io docker-ce
-sudo systemctl enable --now containerd docker
+sudo dnf -y install containerd.io 
+sudo systemctl enable --now containerd
 
 sudo mkdir -p /etc/containerd
 rm -I /etc/containerd/config.toml
