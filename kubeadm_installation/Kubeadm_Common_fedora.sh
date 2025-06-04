@@ -2,7 +2,7 @@
 # Author: Mahin Raza
 # Date: 2025-6-1
 # Description: This script sets up a Kubernetes cluster using kubeadm on Fedora-based systems.
-# Version: 0.0.6
+# Version: 0.0.8
 
 ###############################################################################################
 # USAGE:
@@ -30,19 +30,25 @@
 
 ip_Validate() {
     local ip_address="$1"
+    echo "Validating IP address: $ip_address"
     # Check if the IP address is valid
     if ! [[ "$ip_address" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
         echo "Invalid IP address format."
         exit 1
+    else
+        echo "IP address $ip_address is valid."
     fi
 }
 
 ping_test() {
     local ip_address="$1"
+    echo "Pinging IP address: $ip_address"
     # Check if the IP address is reachable
     if ! ping -c 1 "$ip_address" &> /dev/null; then
         echo "The IP address $ip_address is not reachable. Please check the network connection."
         exit 1
+    else
+        echo "The IP address $ip_address is reachable."
     fi
 }
 
@@ -81,19 +87,24 @@ pre_install() {
         echo "Domain name, hostname, and IP address cannot be empty."
         exit 1
     fi
-
+    sleep 2
     # Example usage or returning the values
     echo "Domain: $domain_name"
     echo "Hostname: $hostname"
     echo "IP Address: $ip_address"
 
+    sleep 2
     
     # Check if the IP address is valid
     ip_Validate "$ip_address"
 
+    sleep 2
+
     ping_test "$ip_address"
 
-    hostnamectl set-hostname "$hostname.$domain_name" 
+    sleep 2
+
+    hostnamectl set-hostname "$hostname.$domain_name"
 
     # Ensure we have permission to write to /etc/hosts
     if [[ ! -w /etc/hosts ]]; then
@@ -102,16 +113,11 @@ pre_install() {
     fi
 
     # Check if the IP address is already in /etc/hosts     
-    echo "Adding hostname and IP address to /etc/hosts..."  
-    if ! sudo grep -q "$ip_address $hostname.$domain_name" /etc/hosts; then
-        echo "Adding $ip_address $hostname.$domain_name to /etc/hosts"
+    if ! grep -q "$ip_address $hostname.$domain_name" /etc/hosts; then
+        echo "$ip_address $hostname.$domain_name $hostname" | sudo tee -a /etc/hosts > /dev/null
     else
-        echo "$ip_address $hostname.$domain_name already exists in /etc/hosts"
-        return
-    fi  
-
-    # Add the hostname and IP address to /etc/hosts   
-    echo "$ip_address $hostname.$domain_name $hostname" | sudo tee -a /etc/hosts > /dev/null   
+        echo "Entry already exists in /etc/hosts. Skipping..."
+    fi
 
     if [[ $1 == "MASTER" ]];then             
         input_nodes "WORKER"  
@@ -124,19 +130,20 @@ pre_install() {
           
 }
 
-NODE=$1
-# Make sure the script is run with a single argument
+# Check if the script is run with the correct number of arguments
 if [[ $# -ne 1 ]]; then
     echo "Usage: $0 <MASTER|WORKER>"
     exit 1
 fi
 
-if [[ "$NODE" == "MASTER" ]];then
+NODE=$1
+
+if [[ $NODE == "MASTER" ]];then
     echo "Setting up the Master Node..."
-    pre_install "$NODE"  # Call the function to set up the master node
-elif [[ "$NODE" == "WORKER" ]]; then
+    pre_install $NODE  # Call the function to set up the master node
+elif [[ $NODE == "WORKER" ]]; then
     echo "Setting up Worker Node..."
-    pre_install "$NODE" # Call the function to set up the worker node
+    pre_install $NODE # Call the function to set up the worker node
 else
     echo "Invalid argument. Please use 'MASTER' or 'WORKER'."
     exit 1
@@ -159,17 +166,21 @@ sudo sed -i --follow-symlinks 's/^SELINUX=enforcing/SELINUX=disabled/' /etc/seli
 # Disable Swap: Required for Kubernetes to function correctly.
 echo "Disabling swap..."
 sudo swapoff -a
-sudo sed -i.bak -e '/swap/s/^/#/g' /etc/fstab
+grep -q " swap " /etc/fstab && sudo sed -i.bak -e '/swap/s/^/#/g' /etc/fstab
 sleep 2
 
 sudo modprobe overlay
 sudo modprobe br_netfilter
+sudo modprobe ip_tables
+sudo modprobe ip_set
 
 # Load Necessary Kernel Modules: Required for Kubernetes networking.
 echo "Loading necessary kernel modules for Kubernetes networking..."
 cat >> /etc/modules-load.d/k8s.conf << EOF  
 overlay
 br_netfilter
+ip_tables
+ip_set
 EOF
 
 # Set Sysctl(kernel) Parameters: Helps with networking.
@@ -184,7 +195,7 @@ EOF
 sudo sysctl --system
 
 # Configure the appropriate firewall rules.
-if [[ $NODE == "MASTER" ]]; then
+if [[ "$NODE" == "MASTER" ]]; then
     echo "Configuring firewall rules for Master Node..."
     for port in 6443 2379-2380 2380 10250 10259 10257; do
         sudo firewall-cmd --permanent --add-port=$port/tcp
@@ -211,7 +222,7 @@ sudo dnf -y install containerd.io
 sudo systemctl enable --now containerd
 
 sudo mkdir -p /etc/containerd
-rm -I /etc/containerd/config.toml
+sudo rm -f /etc/containerd/config.toml
 sudo containerd config default | sudo tee /etc/containerd/config.toml
 # Modify the containerd configuration to use systemd cgroup driver
 sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml 
