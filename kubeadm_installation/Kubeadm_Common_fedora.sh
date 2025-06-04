@@ -195,6 +195,10 @@ EOF
 sudo sysctl --system
 
 # Configure the appropriate firewall rules.
+
+sudo firewall-cmd --permanent --add-protocol=4
+sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="10.244.0.0/16" accept'
+
 if [[ "$NODE" == "MASTER" ]]; then
     echo "Configuring firewall rules for Master Node..."
     for port in 6443 2379-2380 2380 10250 10259 10257 179 5473 ; do
@@ -203,10 +207,11 @@ if [[ "$NODE" == "MASTER" ]]; then
     firewall-cmd --reload
 else
     echo "Configuring firewall rules for Worker Node..."
-    for port in 10250 10256 30000-32767 179 5473; do
+    for port in 10250 10256 179 5473; do
         sudo firewall-cmd --permanent --add-port=$port/tcp
     done
     sudo firewall-cmd --permanent --add-port=30000-32767/udp
+    sudo firewall-cmd --permanent --add-port=30000-32767/tcp
     firewall-cmd --reload
 fi
 
